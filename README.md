@@ -1,70 +1,92 @@
-# Getting Started with Create React App
+# Movie Explorer (React)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple, responsive movie browsing app built with React. Users can search and filter movies, view details, toggle dark/light theme, and save favorites locally. Infinite scrolling loads more movies as you reach the bottom.
 
-## Available Scripts
+## ✨ Features
 
-In the project directory, you can run:
+- **Browse popular movies** (fetched from TMDB) with posters, titles, release dates, and ratings.
+- **Search by title** (client-side).
+- **Filter by genre and rating** (client-side) with a genre list fetched from TMDB.
+- **Movie details page** with overview, release date, and vote average.
+- **Favorites** (add/remove) persisted in `localStorage`.
+- **Dark/Light mode** toggle (preference persisted).
+- **Infinite scrolling** (IntersectionObserver) with client-side de‑duplication.
+- **“Back to top”** floating button.
+- **Basic accessibility**: alt text, `aria-pressed` on favorites, labeled inputs.
+- **Responsive styling** via CSS.
 
-### `npm start`
+## 🧱 Project Structure (key files)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+/Component
+  ├── BackToTop.jsx
+  ├── Favorites.jsx
+  ├── FilterByGenreAndRating.jsx
+  ├── Header.jsx
+  ├── MovieDetails.jsx
+  ├── MovieGrid.jsx
+  └── Search.jsx
+App.js
+style.css
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Getting Started
 
-### `npm test`
+### Prerequisites
+- **Node.js 18+** and **npm** (or yarn/pnpm).
+- A **TMDB account** to obtain:
+  - An **API key (v3)** for `/discover/movie`
+  - A **Read Access Token (v4)** for `/genre/movie/list`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🌐 API Used
 
-### `npm run build`
+- **TMDB – Discover Movies**  
+  `GET https://api.themoviedb.org/3/discover/movie`  
+  Params include `api_key`, `sort_by=popularity.desc`, `language=en-US`, and `page`.  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **TMDB – Genres**  
+  `GET https://api.themoviedb.org/3/genre/movie/list?language=en`  
+  Uses a **Bearer v4 token** in the `Authorization` header.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **TMDB Images**  
+  Posters are loaded from `https://image.tmdb.org/t/p/w500` (or `w342` in some components).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🧠 How It Works (high-level)
 
-### `npm run eject`
+- **Data Fetching & Infinite Scroll**: The home route fetches pages of popular movies. An `IntersectionObserver` watches a sentinel div; when it appears, the app loads the next page. Duplicate movie IDs are filtered out in-memory and total page count stops extra fetches.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **Search**: Client-side, case-insensitive `includes` over the title of the movies currently loaded into memory.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Filters**: Genre options are fetched from TMDB. Filtering is done client-side with `genre_ids.includes(selectedGenre)` and by **flooring** the vote average for exact integer rating matches.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Favorites**: A simple `{ [id]: true }` map is stored in `localStorage`. The “bookmark” button toggles the map and the favorites page renders only movies whose IDs are present in that map.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Movie Details**: The details page reads the movie from the in-memory list by `id` and displays poster, overview, release date, and vote average.
 
-## Learn More
+- **Dark/Light Theme**: Toggled in the header; a `dark-mode` class is set on `<body>` and the preference is persisted to `localStorage`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Back to Top**: When scrolled beyond a threshold, a circular FAB appears; clicking it smoothly scrolls to top.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## ✅ Implemented Features (mapped to requirements)
 
-### Code Splitting
+- Functional components & logical structure
+- React Router routes: Home, Details, Favorites
+- TMDB integration for movies and genres
+- Search + filter (genre + rating)
+- Infinite scrolling for the list
+- Favorites with persistence
+- Dark/light theme with persistence
+- Basic error handling and accessibility-friendly attributes
+- Responsive CSS
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🧩 Tech Stack
 
-### Analyzing the Bundle Size
+- **React** (functional components & hooks)
+- **React Router**
+- **CSS** (responsive styling)
+- **localStorage** for persistence
+- **TMDB** for movies/genres
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+> _Tip:_ If you fork this project, rotate your TMDB keys and move them into a `.env` file. For production deployments, consider a tiny server to proxy TMDB requests and hide sensitive credentials.
