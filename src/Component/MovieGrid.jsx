@@ -3,7 +3,7 @@ import '../style.css';
 import { Link } from "react-router-dom";
 import { FaStar, FaBookmark, FaRegBookmark } from "react-icons/fa";
 
-export default function MovieGrid({ results, IMG_BASE }) {
+export default function MovieGrid({ results, IMG_BASE="https://image.tmdb.org/t/p/w500" }) {
  const [saved, setSaved] = useState(() => {
   const data = localStorage.getItem('saved');
   return data ? JSON.parse(data) : {};
